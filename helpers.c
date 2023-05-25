@@ -2,48 +2,48 @@
 
 /**
  * _printf - print a string to stander out put
- * @sotringuu: string input
+ * @str: string input
  * Return: void
  */
-void _printf(const char *sotringuu)
+void _printf(const char *str)
 {
-	if (!sotringuu)
+	if (!str)
 		return;
-	while (*sotringuu)
+	while (*str)
 	{
-		write(STDOUT_FILENO, sotringuu, 1);
-		sotringuu++;
+		write(STDOUT_FILENO, str, 1);
+		str++;
 	}
 }
 
 /**
  * free_array - free an array of pointers
- * @ar: array of pointers
+ * @array: array of pointers
  * Return: void
  */
-void free_array(char **ar)
+void free_array(char **array)
 {
 	int i;
 
-	if (!ar)
+	if (!array)
 		return;
 
-	for (i = 0; ar[i]; i++)
+	for (i = 0; array[i]; i++)
 	{
-		free(ar[i]);
-		ar[i] = NULL;
+		free(array[i]);
+		array[i] = NULL;
 	}
 
-	free(ar);
+	free(array);
 }
 
 /**
- * split - split a given string by a delimouta
- * @delimouta: string input
+ * split - split a given string by a delimiter
  * @d: data struct input
+ * @delim: string input
  * Return: void
  */
-void split(data *d, const char *delimouta)
+void split(data *d, const char *delim)
 {
 	char *token;
 	int ntoken = 0;
@@ -52,13 +52,13 @@ void split(data *d, const char *delimouta)
 	if (d->av == NULL)
 	{
 		free(d->cmd);
-		perror(d->nomShell);
+		perror(d->shell_name);
 		exit(EXIT_FAILURE);
 	}
 	d->av[0] = NULL;
 	d->av[1] = NULL;
 
-	token = strtok(d->cmd, delimouta);
+	token = strtok(d->cmd, delim);
 	while (token)
 	{
 		d->av = _realloc(d->av, (ntoken + 2) * sizeof(char *));
@@ -68,30 +68,30 @@ void split(data *d, const char *delimouta)
 		if (d->av[ntoken] == NULL)
 			goto free;
 		ntoken++;
-		token = strtok(NULL, delimouta);
+		token = strtok(NULL, delim);
 	}
 	d->av[ntoken] = NULL;
 	return;
 free:
 	free_array(d->av);
 	free(d->cmd);
-	perror(d->nomShell);
+	perror(d->shell_name);
 	exit(EXIT_FAILURE);
 }
 
 /**
  * init_data - init data
  * @d: data struct input
- * @nomShell: string input
+ * @shell_name: string input
  * Return: void
  */
 
-void init_data(data *d, const char *nomShell)
+void init_data(data *d, const char *shell_name)
 {
 	d->cmd = NULL;
 	d->av = NULL;
-	d->nomShell = nomShell;
-	d->last_exit_stats = EXIT_SUCCESS;
+	d->shell_name = shell_name;
+	d->last_exit_status = EXIT_SUCCESS;
 	d->flag_setenv = 0;
 }
 
@@ -103,18 +103,18 @@ void init_data(data *d, const char *nomShell)
 void read_cmd(data *d)
 {
 	size_t n = 0;
-	ssize_t mynread;
+	ssize_t nread;
 	int i = 0;
 
-	mynread = _getline(&d->cmd, &n, stdin);
+	nread = _getline(&d->cmd, &n, stdin);
 
-	if (mynread == -1)
+	if (nread == -1)
 	{
 		free(d->cmd);
 		exit(EXIT_SUCCESS);
 	}
 
-	d->cmd[mynread - 1] = '\0';
+	d->cmd[nread - 1] = '\0';
 	_trim(d->cmd);
 	/* replace hashtag with end of line we can also do it with strtok*/
 	for (i = 0; d->cmd[i] != '\0'; i++)
@@ -127,5 +127,4 @@ void read_cmd(data *d)
 	}
 	_trim(d->cmd);
 }
-
 

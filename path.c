@@ -1,4 +1,5 @@
 #include "main.h"
+
 /**
  * _getenv - retrieves the value of an environment variable.
  * @name: string input
@@ -8,17 +9,20 @@
 char *_getenv(char *name)
 {
 	int i = -1;
-	size_t nomlen;
+	size_t name_len;
+
 	if (name == NULL || *name == '\0')
 		return (NULL);
 	if (environ == NULL)
 		return (NULL);
-	nomlen = _strlen(name);
+
+	name_len = _strlen(name);
+
 	while (environ[++i])
 	{
-		if (!_strncmp(environ[i], name, nomlen) && environ[i][nomlen] == '=')
+		if (!_strncmp(environ[i], name, name_len) && environ[i][name_len] == '=')
 		{
-			return (environ[i] + nomlen + 1);
+			return (environ[i] + name_len + 1);
 		}
 	}
 	return (NULL);
@@ -35,6 +39,7 @@ int _which(data *d)
 		*paths = malloc(_strlen(_getenv("PATH") ? _getenv("PATH") : "") + 1);
 	size_t token_len;
 	int find = -1;
+
 	if (!_getenv("PATH"))
 		goto step_out;
 	_strcpy(paths, _getenv("PATH"));
@@ -65,98 +70,99 @@ step_out:
 	free(paths);
 	return (find);
 }
+
 /**
- * _envir - Initialize a new environment variable,
+ * create_new_entry - Initialize a new environment variable,
  *  or modify an existing one
  * @name: variable name
  * @value: variable value
  * Return: void
  */
-char **_envir(char *name, char *value)
+char *create_new_entry(char *name, char *value)
+{
+	size_t new_len = strlen(name) + strlen(value) + 2;
+	char *new_entry = malloc(new_len);
+
+	if (new_entry == NULL)
+		return (NULL);
+
+	strcpy(new_entry, name);
+	strcat(new_entry, "=");
+	strcat(new_entry, value);
+
+	return (new_entry);
+}
+/**
+ * _new_environ - Initialize a new environment variable,
+ *  or modify an existing one
+ * @name: variable name
+ * @value: variable value
+ * Return: void
+ */
+char **_new_environ(char *name, char *value)
 {
 	int env_len = 0, i = 0;
-	char *entree;
-	char **envir;
+	char *new_entry;
+	char **new_environ;
 
 	while (environ[env_len])
 		env_len++;
-	entree = create_entree(name, value);
-	if (entree == NULL)
+	new_entry = create_new_entry(name, value);
+	if (new_entry == NULL)
 		return (NULL);
-	envir = _getenv(name) ? malloc((env_len + 1) * sizeof(char *))
+	new_environ = _getenv(name) ? malloc((env_len + 1) * sizeof(char *))
 								: malloc((env_len + 2) * sizeof(char *));
 
-	if (!envir)
+	if (!new_environ)
 	{
-		free(entree);
+		free(new_entry);
 		return (NULL);
 	}
 	for (i = 0; environ[i]; i++)
 	{
-		envir[i] = malloc(strlen(environ[i]) + 1);
-		if (!envir[i])
+		new_environ[i] = malloc(strlen(environ[i]) + 1);
+		if (!new_environ[i])
 		{
-			free_array(envir);
-			free(entree);
+			free_array(new_environ);
+			free(new_entry);
 			return (NULL);
 		}
 		if (strncmp(environ[i], name, strlen(name)) == 0
 		&& environ[i][strlen(name)] == '=')
-			strcpy(envir[i], entree);
+			strcpy(new_environ[i], new_entry);
 		else
-			strcpy(envir[i], environ[i]);
+			strcpy(new_environ[i], environ[i]);
 	}
 	if (!_getenv(name))
 	{
-		envir[env_len] = entree;
-		envir[env_len + 1] = NULL;
+		new_environ[env_len] = new_entry;
+		new_environ[env_len + 1] = NULL;
 	}
 	else
-		envir[env_len] = NULL;
-	return (envir);
-}
-
-/**
- * create_entree - Initialize a new environment variable,
- *  or modify an existing one
- * @name: variable name
- * @value: variable value
- * Return: void
- */
-char *create_entree(char *name, char *value)
-{
-	size_t new_len = strlen(name) + strlen(value) + 2;
-	char *entree = malloc(new_len);
-	if (entree == NULL)
-		return (NULL);
-	strcpy(entree, name);
-	strcat(entree, "=");
-	strcat(entree, value);
-
-	return (entree);
+		new_environ[env_len] = NULL;
+	return (new_environ);
 }
 
 /**
  * _setenv - Initialize a new environment variable, or modify an existing one
  * @d: to use the flag
- * @value: variable value
  * @name: variable name
+ * @value: variable value
  * Return: void
  */
 int _setenv(data *d, char *name, char *value)
 {
-	char **envir;
+	char **new_environ;
 
 	if (!name || !value)
 		return (-1);
 
-	envir = _envir(name, value);
-	if (!envir)
+	new_environ = _new_environ(name, value);
+	if (!new_environ)
 		return (-1);
-	environ = envir;
+	environ = new_environ;
 	d->flag_setenv = 1;
 
 	return (0);
 }
-
 

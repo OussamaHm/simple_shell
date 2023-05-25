@@ -2,16 +2,17 @@
 
 /**
  * _getline_helper - getline helper function
+ * @lineptr: string input
  * @n: int input
- * @Lptr: string input
  * Return: int
  */
-
-int _getline_helper(char **Lptr, size_t *n)
-{	if (*Lptr == NULL || *n == 0)
-	{*n = 128;
-		*Lptr = malloc(*n);
-		if (*Lptr == NULL)
+int _getline_helper(char **lineptr, size_t *n)
+{
+	if (*lineptr == NULL || *n == 0)
+	{
+		*n = 128;
+		*lineptr = malloc(*n);
+		if (*lineptr == NULL)
 			return (-1);
 	}
 	return (0);
@@ -19,48 +20,48 @@ int _getline_helper(char **Lptr, size_t *n)
 
 /**
  * _getline - reads the input from FILE
- * @Lptr: string input
- * @stmr: FILE input 
+ * @lineptr: string input
  * @n: int input
- * 
+ * @stream: FILE input
  * Return: ssize_t
  */
-
-ssize_t _getline(char **Lptr, size_t *n, FILE *stmr)
+ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 {
-	ssize_t bRead = 0;
-	size_t pos = 0, newS;
-	static char buf[READ_BUF_SIZE];static size_t buffS, bufffPos;char *nwBufff;
-	if (Lptr == NULL || n == NULL || stmr == NULL
-		|| _getline_helper(Lptr, n) == -1)
+	ssize_t bytesRead = 0;
+	size_t position = 0, newSize;
+	static char buf[READ_BUF_SIZE];
+	static size_t bufSize, bufPos;
+	char *newBuffer;
+
+	if (lineptr == NULL || n == NULL || stream == NULL
+		|| _getline_helper(lineptr, n) == -1)
 		return (-1);
 	while (1)
 	{
-		if (bufffPos >= buffS)
+		if (bufPos >= bufSize)
 		{
-			bRead = read(stmr->_fileno, buf, READ_BUF_SIZE);
-			if (bRead <= 0 && pos == 0)
+			bytesRead = read(stream->_fileno, buf, READ_BUF_SIZE);
+			if (bytesRead <= 0 && position == 0)
 				return (-1);
-			else if (bRead <= 0)
+			else if (bytesRead <= 0)
 				break;
-			buffS = bRead;
-			bufffPos = 0;
+			bufSize = bytesRead;
+			bufPos = 0;
 		}
-		if (pos >= *n - 1)
+		if (position >= *n - 1)
 		{
-			newS = *n * 2;
-			nwBufff = realloc(*Lptr, newS);
-			if (nwBufff == NULL)
+			newSize = *n * 2;
+			newBuffer = realloc(*lineptr, newSize);
+			if (newBuffer == NULL)
 				return (-1);
-			*Lptr = nwBufff;
-			*n = newS;
+			*lineptr = newBuffer;
+			*n = newSize;
 		}
-		(*Lptr)[pos++] = buf[bufffPos++];
-		if ((*Lptr)[pos - 1] == '\n')
+		(*lineptr)[position++] = buf[bufPos++];
+		if ((*lineptr)[position - 1] == '\n')
 			break;
 	}
-	(*Lptr)[pos] = '\0';
-	return (pos);
+	(*lineptr)[position] = '\0';
+	return (position);
 }
-
 
