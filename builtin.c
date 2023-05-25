@@ -1,27 +1,26 @@
 #include "main.h"
 
 /**
- * exec_builtin - check if built in and then exec
- * @d: data struct input
+ * exec_builtN - check if built in and then exec
  * Return: 1 if built in, 0 if not
+ * @d: data struct input
  */
-int exec_builtin(data *d)
+int exec_builtN(data *d)
 {
-	builtin builtin[] = {
-		{"exit", builtin_exit},
-		{"env", builtin_env},
-		{"setenv", builtin_setenv},
-		{"unsetenv", builtin_unsetenv},
-		{"cd", builtin_cd},
+	builtN builtN[] = {
+		{"exit", builtN_exit},
+		{"env", builtN_env},
+		{"setenv", builtN_setenv},
+		{"unsetenv", builtN_unsetenv},
+		{"cd", builtN_cd},
 		{NULL, NULL},
 	};
 	int i = 0;
-
-	for (i = 0; builtin[i].cmd; i++)
+	for (i = 0; builtN[i].cmd; i++)
 	{
-		if (_strcmp(d->av[0], builtin[i].cmd) == 0)
+		if (_strcmp(d->av[0], builtN[i].cmd) == 0)
 		{
-			builtin[i].f(d);
+			builtN[i].f(d);
 			return (1);
 		}
 	}
@@ -29,27 +28,35 @@ int exec_builtin(data *d)
 }
 
 /**
- * builtin_exit - exits the shell
+ * builtN_unsetenv - Remove an environment variable
  * @d: data struct input
  * Return: void
  */
-void builtin_exit(data *d)
+void builtN_unsetenv(data *d)
 {
-	if (d->av[1] && _isnumber(d->av[1]))
-		d->last_exit_status = atoi(d->av[1]);
-	free_array(d->av);
-	free(d->cmd);
-	if (d->flag_setenv)
-		free_array(environ);
-	exit(d->last_exit_status);
+	int i, j;
+	int len;
+
+	(void)d;
+	if (!d->av[1] || !getenv(d->av[1]))
+	{
+		_perror(d->nomShell, "variable not found.");
+		return;
+	}
+	len = strlen(d->av[1]);
+	for (i = 0; environ[i]; i++)
+		if (strncmp(environ[i], d->av[1], len) == 0 && environ[i][len] == '=')
+			for (j = i; environ[j]; j++)
+				environ[j] = environ[j + 1];
 }
 
 /**
- * builtin_env - prints the current environment
- * @d: data struct input
+ * builtN_env - prints the current environment
  * Return: void
+ * @d: data struct input
  */
-void builtin_env(data *d)
+
+void builtN_env(data *d)
 {
 	int i = 0;
 
@@ -61,14 +68,30 @@ void builtin_env(data *d)
 		i++;
 	}
 }
+
 /**
- * builtin_setenv - Initialize a new environment variable,
+ * builtN_exit - exits the shell
+ * @d: data struct input
+ * Return: void
+ */
+void builtN_exit(data *d)
+{
+	if (d->av[1] && _isnumber(d->av[1]))
+		d->last_exit_stats = atoi(d->av[1]);
+	free_array(d->av);
+	free(d->cmd);
+	if (d->flag_setenv)
+		free_array(environ);
+	exit(d->last_exit_stats);
+}
+
+/**
+ * builtN_setenv - Initialize a new environment variable,
  * or modify an existing one
  * @d: data struct input
  * Return: void
  */
-
-void builtin_setenv(data *d)
+void builtN_setenv(data *d)
 {
 	(void)d;
 	if (d->av[1] && d->av[2])
@@ -80,27 +103,7 @@ void builtin_setenv(data *d)
 	}
 }
 
-/**
- * builtin_unsetenv - Remove an environment variable
- * @d: data struct input
- * Return: void
- */
-void builtin_unsetenv(data *d)
-{
-	int i, j;
-	int len;
 
-	(void)d;
-	if (!d->av[1] || !getenv(d->av[1]))
-	{
-		_perror(d->shell_name, "variable not found.");
-		return;
-	}
-	len = strlen(d->av[1]);
-	for (i = 0; environ[i]; i++)
-		if (strncmp(environ[i], d->av[1], len) == 0 && environ[i][len] == '=')
-			for (j = i; environ[j]; j++)
-				environ[j] = environ[j + 1];
-}
+
 
 

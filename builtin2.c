@@ -1,16 +1,16 @@
 #include "main.h"
 /**
- * builtin_cd - change directory
+ * builtN_cd - change directory
  * @d: data
  */
-void builtin_cd(data *d)
+void builtN_cd(data *d)
 {
 	char *dir = d->av[1];
-	char cwd[256];
+	char cawwd[256];
 
-	if (getcwd(cwd, sizeof(cwd)) == NULL)
-		perror("getcwd() error");
-	_setenv(d, "PWD", cwd);
+	if (getcawwd(cawwd, sizeof(cawwd)) == NULL)
+		perror("getcawwd() error");
+	_setenv(d, "PWD", cawwd);
 	if (!dir)
 		dir = _getenv("HOME");
 	if (chdir(dir) == -1)
@@ -18,8 +18,9 @@ void builtin_cd(data *d)
 	else
 	{
 		_setenv(d, "OLDPWD", _getenv("PWD"));
-		if (getcwd(cwd, sizeof(cwd)) == NULL)
-			perror("getcwd() error");
-		_setenv(d, "PWD", cwd);
+		if (getcawwd(cawwd, sizeof(cawwd)) == NULL)
+			perror("getcawwd() error");
+		_setenv(d, "PWD", cawwd);
 	}
 }
+

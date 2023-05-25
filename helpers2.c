@@ -2,27 +2,24 @@
 
 /**
  * _perror - print in stderr
- * @str1: name of shell program
- * @str2: message error
+ * @stringuu2: message error
+ * @stringuu1: name of shell program
  * Return: void
  */
-void _perror(const char *str1, const char *str2)
+void _perror(const char *stringuu1, const char *stringuu2)
 {
-	if (!str1 || !str2)
+	if (!stringuu1 || !stringuu2)
 		return;
-
-	while (*str1)
+	while (*stringuu1)
 	{
-		write(STDERR_FILENO, str1, 1);
-		str1++;
+		write(STDERR_FILENO, stringuu1, 1);
+		stringuu1++;
 	}
-
 	write(STDERR_FILENO, ": ", 2);
-
-	while (*str2)
+	while (*stringuu2)
 	{
-		write(STDERR_FILENO, str2, 1);
-		str2++;
+		write(STDERR_FILENO, stringuu2, 1);
+		stringuu2++;
 	}
 	write(STDERR_FILENO, "\n", 1);
 }
@@ -30,22 +27,18 @@ void _perror(const char *str1, const char *str2)
 
 /**
  * _trim - remove leading and trailing spaces and tabs from a string
- * @str: string input
  * Return: void.
+ * @str: string input
  */
 
 void _trim(char *str)
 {
 	int i, j, len = _strlen(str);
-
 	for (i = 0; i < len && (str[i] == ' ' || str[i] == '\t'); i++)
 		;
-
 	for (j = 0; i < len ; i++, j++)
 		str[j] = str[i];
-
 	str[j] = '\0';
-
 	for (i = _strlen(str) - 1; i > 0 && (str[i] == ' ' || str[i] == '\t'); i--)
 		str[i] = '\0';
 }
@@ -54,35 +47,36 @@ void _trim(char *str)
 /**
  * _realloc - reallocates a memory block using malloc and free
  *
+ * @nouveau_siz: unsigned int 
  * @ptr: pointer void
- * @new_size: unsigned int
  *
  * Return: the newly allocated memory
  */
-void *_realloc(void *ptr, unsigned int new_size)
+void *_realloc(void *ptr, unsigned int nouveau_siz)
 {
 	char *p;
-	unsigned int i, tp = new_size, old_size = sizeof(ptr);
+	unsigned int i, tp = nouveau_siz, ancien_si = sizeof(ptr);
 
-	if (old_size == new_size)
+	if (ancien_si == nouveau_siz)
 		return (ptr);
 	if (ptr == NULL)
-		return (malloc(new_size));
+		return (malloc(nouveau_siz));
 
-	if (new_size > old_size)
-		tp = old_size;
+	if (nouveau_siz > ancien_si)
+		tp = ancien_si;
 
-	if (new_size == 0)
+	if (nouveau_siz == 0)
 	{
 		free(ptr);
 		return (NULL);
 	}
 
-	p = malloc(new_size);
+	p = malloc(nouveau_siz);
 
 	for (i = 0; i < tp; i++)
 		p[i] = ((char *)ptr)[i];
 	free(ptr);
 	return (p);
 }
+
 

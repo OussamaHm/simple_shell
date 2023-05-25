@@ -2,49 +2,37 @@
 
 /**
  * start_process - start a new process
- * @d: data struct input
  * Return: void
+ * @d: data struct input
  */
 
 void start_process(data *d)
 {
-	pid_t child_pid = fork();
-	int status = 0;
+	pid_t le_fils_de_pid = fork();
+	int stats = 0;
 
-	if (child_pid == -1)
+	if (le_fils_de_pid == -1)
 		goto free;
-	if (child_pid == 0 && execve(d->av[0], d->av, NULL) == -1)
+	if (le_fils_de_pid == 0 && execve(d->av[0], d->av, NULL) == -1)
 		goto free;
-	else if (wait(&status) == -1)
+	else if (wait(&stats) == -1)
 		goto free;
-	if (WIFEXITED(status))
-		d->last_exit_status = WEXITSTATUS(status);
+	if (WIFEXITED(stats))
+		d->last_exit_stats = WEXITSTATUS(stats);
 	return;
 free:
-	perror(d->shell_name);
+	perror(d->nomShell);
 	free_array(d->av);
 	free(d->cmd);
 	exit(EXIT_FAILURE);
 }
 
-/**
- * handler_sigint - Signal handler function
- * @signal: int input
- * Return: void
- */
 
-void handler_sigint(int signal)
-{
-	/*const char prompt[] = PROMPT;*/
-	(void)signal;
-	exit(EXIT_FAILURE);
-	/*_printf(prompt);*/
-}
 
 /**
  * _exec - exectute cmd
- * @d: data struct input
  * Return: void
+ * @d: data struct input
  */
 
 void _exec(data *d)
@@ -62,12 +50,12 @@ void _exec(data *d)
 		if (_strlen(d->cmd) != 0)
 		{
 			split(d, " ");
-			if (!exec_builtin(d))
+			if (!exec_builtN(d))
 			{
 				_which(d);
 				if (access(d->av[0], F_OK) == -1)
 				{
-					perror(d->shell_name);
+					perror(d->nomShell);
 				}
 				else
 				{
@@ -79,4 +67,19 @@ void _exec(data *d)
 		free(d->cmd);
 	}
 }
+
+/**
+ * handler_sigint - Signal handler function
+ * Return: void
+ * @signal: int input
+ */
+
+void handler_sigint(int signal)
+{
+	/*const char prompt[] = PROMPT;*/
+	(void)signal;
+	exit(EXIT_FAILURE);
+	/*_printf(prompt);*/
+}
+
 

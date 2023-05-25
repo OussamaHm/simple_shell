@@ -19,79 +19,83 @@ extern char **environ;
  * struct data - holds the main data.
  * @av: Array of tokens to pass for execve
  * @cmd: The user input, the command line
- * @shell_name: The name of the shell program
- * @last_exit_status: last exit status of last command executed
+ * @nomShell: The name of the shell program
+ * @last_exit_stats: last exit stats of last command executed
  * @flag_setenv: 1 if user did exec setenv (use it to free memory)
  */
 typedef struct data
 {
 	char **av;
 	char *cmd;
-	const char *shell_name;
-	int last_exit_status;
+	const char *nomShell;
+	int last_exit_stats;
 	int flag_setenv;
 } data;
 
 /**
- * struct builtin - holds the main data.
+ * struct builtN - holds the main data.
  * @cmd: built in cmd
- * @f: function of builtin cmd
+ * @f: function of builtN cmd
  */
-typedef struct builtin
+typedef struct builtN
 {
 	const char *cmd;
 	void (*f)(data *d);
-} builtin;
+} builtN;
 
-/* builtin.c */
-int exec_builtin(data *d);
-void builtin_exit(data *d);
-void builtin_env(data *d);
-void builtin_setenv(data *d);
-void builtin_unsetenv(data *d);
-void builtin_cd(data *d);
 
 
 /* helpers.c */
 void _printf(const char *str);
 void free_array(char **array);
-void split(data *d, const char *delim);
-void init_data(data *d, const char *shell_name);
+void split(data *d, const char *delimouta);
+void init_data(data *d, const char *nomShell);
 void read_cmd(data *d);
-
-/* helpers2.c */
-void _perror(const char *str1, const char *str2);
-void _trim(char *str);
-void *_realloc(void *ptr, unsigned int new_size);
 
 /* exec.c */
 void start_process(data *d);
 void handler_sigint(int sig);
 void _exec(data *d);
 
+/* string_utils.c */
+unsigned int _strlen(char *str);
+int _strcmp(const char *sotoring1, const char *sotoring2);
+int _strncmp(const char *sotoring1, const char *sotoring2, int n);
+char *_strcpy(char *dest, const char *src);
+char *_strcat(char *dest, const char *src);
+
+
+/* helpers2.c */
+void _perror(const char *stringuu1, const char *stringuu2);
+void _trim(char *str);
+void *_realloc(void *ptr, unsigned int nouveau_siz);
+
+
 /* path.c */
 char *_getenv(char *name);
 int _which(data *d);
 int _setenv(data *d, char *name, char *value);
 
-/* string_utils.c */
-unsigned int _strlen(char *str);
-int _strcmp(const char *s1, const char *s2);
-int _strncmp(const char *s1, const char *s2, int n);
-char *_strcpy(char *dest, const char *src);
-char *_strcat(char *dest, const char *src);
-
-
 /* string_utils2.c */
 char *_strdup(const char *str);
-int _isnumber(const char *status);
+int _isnumber(const char *stats);
 int _isdigit(int c);
+
+/* builtN.c */
+int exec_builtN(data *d);
+void builtN_exit(data *d);
+void builtN_env(data *d);
+void builtN_setenv(data *d);
+void builtN_unsetenv(data *d);
+void builtN_cd(data *d);
+
 
 /* _getline.c */
 #define READ_BUF_SIZE 1024
 
-ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
+ssize_t _getline(char **Lptr, size_t *n, FILE *stmr);
 
 
 #endif
+
 
