@@ -3,7 +3,7 @@
 /**
  * main - init data
  * @argc: input size of @argv
- * @argv: input arr of command line arguments
+ * @argv: input array of command line arguments
  * Return: Always 0.
  */
 int main(int argc, char **argv)

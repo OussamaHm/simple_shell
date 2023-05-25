@@ -10,7 +10,7 @@
 char *_strdup(const char *str)
 {
 	int i, len = 0;
-	char *rs;
+	char *result;
 
 	if (str == NULL)
 		return (NULL);
@@ -18,32 +18,32 @@ char *_strdup(const char *str)
 	while (str[len] != '\0')
 		len++;
 
-	rs = (char *)malloc((len + 1) * sizeof(char));
+	result = (char *)malloc((len + 1) * sizeof(char));
 
-	if (rs == NULL)
+	if (result == NULL)
 		return (NULL);
 
 	for (i = 0; i <= len; i++)
-		rs[i] = str[i];
+		result[i] = str[i];
 
-	return (rs);
+	return (result);
 }
 
 
 /**
  * _isnumber - check if a string is a number
- * @stt: string to be checked
+ * @status: string to be checked
  * Return: void
  */
-int _isnumber(const char *stt)
+int _isnumber(const char *status)
 {
-	if (stt == NULL || stt[0] == '\0')
+	if (status == NULL || status[0] == '\0')
 		return (0);
-	while (*stt)
+	while (*status)
 	{
-		if (!_isdigit(*stt))
+		if (!_isdigit(*status))
 			return (0);
-		stt++;
+		status++;
 	}
 	return (1);
 }

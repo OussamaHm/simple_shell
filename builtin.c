@@ -1,8 +1,8 @@
 #include "main.h"
 
 /**
- * @d: data struct input
  * exec_builtin - check if built in and then exec
+ * @d: data struct input
  * Return: 1 if built in, 0 if not
  */
 int exec_builtin(data *d)
@@ -36,12 +36,12 @@ int exec_builtin(data *d)
 void builtin_exit(data *d)
 {
 	if (d->av[1] && _isnumber(d->av[1]))
-		d->last_exit_stt = atoi(d->av[1]);
-	free_arr(d->av);
+		d->last_exit_status = atoi(d->av[1]);
+	free_array(d->av);
 	free(d->cmd);
 	if (d->flag_setenv)
-		free_arr(environ);
-	exit(d->last_exit_stt);
+		free_array(environ);
+	exit(d->last_exit_status);
 }
 
 /**
@@ -93,7 +93,7 @@ void builtin_unsetenv(data *d)
 	(void)d;
 	if (!d->av[1] || !getenv(d->av[1]))
 	{
-		_perror(d->shell_nm, "variable not found.");
+		_perror(d->shell_name, "variable not found.");
 		return;
 	}
 	len = strlen(d->av[1]);

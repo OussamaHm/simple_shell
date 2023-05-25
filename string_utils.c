@@ -5,23 +5,28 @@
  * @str: string input
  * Return: nbr of char in str.
  */
+
 unsigned int _strlen(char *str)
-{unsigned int i;
+{
+	unsigned int i;
+
 	for (i = 0; str[i] != '\0'; i++)
 		;
 	return (i);
 }
+
+
 /**
  * _strcmp - compares two strings.
  *
  * @s1: input const string
  * @s2: input const string
  *
- * Return: returns an integer indicating the rs of the comparison,
+ * Return: returns an integer indicating the result of the comparison,
  *	as follows:
  *		• 0, if the s1 and s2 are equal
- *		• a positive value if s1 is greater than s2
  *		• a negative value if s1 is less than s2
+ *		• a positive value if s1 is greater than s2
  */
 int _strcmp(const char *s1, const char *s2)
 {
@@ -43,16 +48,15 @@ int _strcmp(const char *s1, const char *s2)
 /**
  * _strncmp - compares two strings.
  *
- * Return: returns an integer indicating the rs of the comparison,
- *	as follows:
- *		• 0, if the s1 and s2 are equal
- *		• a negative value if s1 is less than s2
- *		• a positive value if s1 is greater than s2
- * 
  * @s1: input const string
  * @s2: input const string
  * @n: input int
  *
+ * Return: returns an integer indicating the result of the comparison,
+ *	as follows:
+ *		• 0, if the s1 and s2 are equal
+ *		• a negative value if s1 is less than s2
+ *		• a positive value if s1 is greater than s2
  */
 int _strncmp(const char *s1, const char *s2, int n)
 {
@@ -75,48 +79,48 @@ int _strncmp(const char *s1, const char *s2, int n)
 }
 
 /**
- * _strcpy - copy src to desty .
+ * _strcpy - copy src to dest .
  *
- * @desty: input char *
+ * @dest: input char *
  * @src: input const char *
  *
  * Return: char *
  */
-char *_strcpy(char *desty, const char *src)
+char *_strcpy(char *dest, const char *src)
 {
 	int len;
 
 	for (len = 0; src[len] != '\0'; ++len)
 	{
-		desty[len] = src[len];
+		dest[len] = src[len];
 	}
-	desty[len] = '\0';
-	return (desty);
+	dest[len] = '\0';
+	return (dest);
 }
 
 /**
- * _strcat - appends the src string to the desty string,
+ * _strcat - appends the src string to the dest string,
  *
- * @desty: input string
+ * @dest: input string
  * @src: input const string
  *
  * Return: void
  */
-char *_strcat(char *desty, const char *src)
+char *_strcat(char *dest, const char *src)
 {
-	char *rs = desty;
+	char *result = dest;
 
-	while (*desty != '\0')
-		desty++;
+	while (*dest != '\0')
+		dest++;
 
 	while (*src != '\0')
 	{
-		*desty = *src;
-		desty++;
+		*dest = *src;
+		dest++;
 		src++;
 	}
-	*desty = '\0';
+	*dest = '\0';
 
-	return (rs);
+	return (result);
 }
 

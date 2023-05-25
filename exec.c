@@ -8,20 +8,21 @@
 
 void start_process(data *d)
 {
-	pid_t chipid = fork();
-	int stt = 0;
-	if (chipid == -1)
+	pid_t child_pid = fork();
+	int status = 0;
+
+	if (child_pid == -1)
 		goto free;
-	if (chipid == 0 && execve(d->av[0], d->av, NULL) == -1)
+	if (child_pid == 0 && execve(d->av[0], d->av, NULL) == -1)
 		goto free;
-	else if (wait(&stt) == -1)
+	else if (wait(&status) == -1)
 		goto free;
-	if (WIFEXITED(stt))
-		d->last_exit_stt = WEXITSTATUS(stt);
+	if (WIFEXITED(status))
+		d->last_exit_status = WEXITSTATUS(status);
 	return;
 free:
-	perror(d->shell_nm);
-	free_arr(d->av);
+	perror(d->shell_name);
+	free_array(d->av);
 	free(d->cmd);
 	exit(EXIT_FAILURE);
 }
@@ -34,10 +35,10 @@ free:
 
 void handler_sigint(int signal)
 {
-	/*const char prpt[] = PROMPT;*/
+	/*const char prompt[] = PROMPT;*/
 	(void)signal;
 	exit(EXIT_FAILURE);
-	/*_printf(prpt);*/
+	/*_printf(prompt);*/
 }
 
 /**
@@ -48,14 +49,14 @@ void handler_sigint(int signal)
 
 void _exec(data *d)
 {
-	const char prpt[] = PROMPT;
+	const char prompt[] = PROMPT;
 
 	signal(SIGINT, handler_sigint);
 
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
-			_printf(prpt);
+			_printf(prompt);
 
 		read_cmd(d);
 		if (_strlen(d->cmd) != 0)
@@ -66,14 +67,14 @@ void _exec(data *d)
 				_which(d);
 				if (access(d->av[0], F_OK) == -1)
 				{
-					perror(d->shell_nm);
+					perror(d->shell_name);
 				}
 				else
 				{
 					start_process(d);
 				}
 			}
-			free_arr(d->av);
+			free_array(d->av);
 		}
 		free(d->cmd);
 	}

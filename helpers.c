@@ -5,7 +5,6 @@
  * @str: string input
  * Return: void
  */
-
 void _printf(const char *str)
 {
 	if (!str)
@@ -18,24 +17,24 @@ void _printf(const char *str)
 }
 
 /**
- * free_arr - free an arr of pointers
- * @arr: arr of pointers
+ * free_array - free an array of pointers
+ * @array: array of pointers
  * Return: void
  */
-void free_arr(char **arr)
+void free_array(char **array)
 {
 	int i;
 
-	if (!arr)
+	if (!array)
 		return;
 
-	for (i = 0; arr[i]; i++)
+	for (i = 0; array[i]; i++)
 	{
-		free(arr[i]);
-		arr[i] = NULL;
+		free(array[i]);
+		array[i] = NULL;
 	}
 
-	free(arr);
+	free(array);
 }
 
 /**
@@ -46,58 +45,58 @@ void free_arr(char **arr)
  */
 void split(data *d, const char *delim)
 {
-	char *tk;
-	int ntk = 0;
+	char *token;
+	int ntoken = 0;
 
 	d->av = malloc(2 * sizeof(char *));
 	if (d->av == NULL)
 	{
 		free(d->cmd);
-		perror(d->shell_nm);
+		perror(d->shell_name);
 		exit(EXIT_FAILURE);
 	}
 	d->av[0] = NULL;
 	d->av[1] = NULL;
 
-	tk = strtok(d->cmd, delim);
-	while (tk)
+	token = strtok(d->cmd, delim);
+	while (token)
 	{
-		d->av = _realloc(d->av, (ntk + 2) * sizeof(char *));
+		d->av = _realloc(d->av, (ntoken + 2) * sizeof(char *));
 		if (d->av == NULL)
 			goto free;
-		d->av[ntk] = _strdup(tk);
-		if (d->av[ntk] == NULL)
+		d->av[ntoken] = _strdup(token);
+		if (d->av[ntoken] == NULL)
 			goto free;
-		ntk++;
-		tk = strtok(NULL, delim);
+		ntoken++;
+		token = strtok(NULL, delim);
 	}
-	d->av[ntk] = NULL;
+	d->av[ntoken] = NULL;
 	return;
 free:
-	free_arr(d->av);
+	free_array(d->av);
 	free(d->cmd);
-	perror(d->shell_nm);
+	perror(d->shell_name);
 	exit(EXIT_FAILURE);
 }
 
 /**
  * init_data - init data
  * @d: data struct input
- * @shell_nm: string input
+ * @shell_name: string input
  * Return: void
  */
 
-void init_data(data *d, const char *shell_nm)
+void init_data(data *d, const char *shell_name)
 {
 	d->cmd = NULL;
 	d->av = NULL;
-	d->shell_nm = shell_nm;
-	d->last_exit_stt = EXIT_SUCCESS;
+	d->shell_name = shell_name;
+	d->last_exit_status = EXIT_SUCCESS;
 	d->flag_setenv = 0;
 }
 
 /**
- * read_cmd - get the commend from the prpt and structure it into data struct
+ * read_cmd - get the commend from the prompt and structure it into data struct
  * @d: data struct input
  * Return: void
  */
